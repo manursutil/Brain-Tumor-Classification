@@ -1,0 +1,10 @@
+argparse
+fastapi
+python-multipart
+scikit-learn
+torch
+torchvision
+tqdm
+uvicorn
+numpy
+gunicorn

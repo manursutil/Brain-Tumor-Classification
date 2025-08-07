@@ -16,8 +16,8 @@ from src.utils import calculate_accuracy
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-weights_path="../models/resnet18_brain_mri.pt"
-test_dir = "../data/Testing/"
+weights_path="./models/resnet18_brain_mri.pt"
+test_dir = "./data/Testing/"
 
 def load_model(weights_path=weights_path):
     model = models.resnet18(weights=None)

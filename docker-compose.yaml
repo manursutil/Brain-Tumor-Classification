@@ -1,0 +1,14 @@
+services:
+  brain-mri-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: brain-mri-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./src:/app/src
+    command: >
+      gunicorn src.api:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000

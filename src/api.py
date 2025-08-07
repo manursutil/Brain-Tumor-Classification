@@ -9,7 +9,7 @@ from tempfile import NamedTemporaryFile
 
 sys.path.append(os.path.abspath(".."))
 
-from src.evaluate import load_model, predict_image
+from src.evaluate import load_model, predict_image, evaluate_model
 
 WEIGHTS_PATH = "./models/resnet18_brain_mri.pt"
 MAX_IMAGE_SIZE = 5 * 1024 * 1024
@@ -26,7 +26,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["POST"],
+    allow_methods=["POST", "GET"],
     allow_headers=["Content-Type"],
 )
 
@@ -52,6 +52,23 @@ async def predict(file: UploadFile = File(..., media_type="image/jpeg"), model=D
     except Exception as e:
         logger.exception("Prediction failed")
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/metrics")
+def get_metrics(model=Depends(get_model)):
+    try:
+        metrics = evaluate_model(model)
+        return metrics
+    except Exception as e:
+        logger.exception("Failed to evaluate model.")
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/health")
+def health_check(model=Depends(get_model)):
+    try:
+        assert model is not None
+        return {"status": "ok", "model_loaded": True}
+    except Exception:
+        return {"status": "error", "model_loaded": False}
     
 if __name__ == "__main__":
     import uvicorn
