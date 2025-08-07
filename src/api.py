@@ -1,15 +1,15 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
-from fastapi.middleware.cors import CORSMiddleware
-from PIL import Image
 import io
+import logging
 import os
 import sys
-import logging 
-from tempfile import NamedTemporaryFile
+
+from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from PIL import Image
 
 sys.path.append(os.path.abspath(".."))
 
-from src.evaluate import load_model, predict_image, evaluate_model
+from src.evaluate import evaluate_model, load_model, predict_image
 
 WEIGHTS_PATH = "./models/resnet18_brain_mri.pt"
 MAX_IMAGE_SIZE = 5 * 1024 * 1024

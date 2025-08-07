@@ -7,7 +7,7 @@ from torchvision.models import ResNet18_Weights
 from tqdm import tqdm
 
 from dataset import BrainTumorDataset, get_transforms
-from utils import calculate_accuracy, set_seed, print_metrics, log_metrics_to_csv
+from utils import calculate_accuracy, log_metrics_to_csv, print_metrics, set_seed
 
 set_seed(42)
 

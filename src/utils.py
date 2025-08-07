@@ -1,8 +1,10 @@
-import random 
+import csv
+import os
+import random
+
 import numpy as np
 import torch
-import os
-import csv
+
 
 def calculate_accuracy(outputs, labels):
     preds = torch.argmax(outputs, dim=1)

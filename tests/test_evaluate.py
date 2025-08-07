@@ -1,9 +1,9 @@
 import io
 import types
-import torch
+
 import pytest
+import torch
 from PIL import Image
-from torch.utils.data import DataLoader
 
 import src.evaluate as ev
 

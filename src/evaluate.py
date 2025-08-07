@@ -1,18 +1,17 @@
+import json
+import os
+import sys
+
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
-from torchvision import models, transforms
 from PIL import Image
-import numpy as np
-import json
 from sklearn.metrics import classification_report, confusion_matrix
-import sys
-import os
+from torch.utils.data import DataLoader
+from torchvision import models
 
 sys.path.append(os.path.abspath(".."))
 
-from src.dataset import BrainTumorDataset, get_transforms, CLASS_NAMES
-from src.utils import calculate_accuracy
+from src.dataset import CLASS_NAMES, BrainTumorDataset, get_transforms
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
