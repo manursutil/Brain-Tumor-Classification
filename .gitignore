@@ -1,5 +1,6 @@
 data/
 .DS_Store
+.vscode
 
 # Python-generated files
 __pycache__/
