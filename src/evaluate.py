@@ -23,8 +23,9 @@ def load_model(weights_path=weights_path):
     model = models.resnet18(weights=None)
     model.fc = nn.Linear(model.fc.in_features, 4)
     model.load_state_dict(torch.load(weights_path, map_location=device))
-    model.eval()
     model.to(device)
+    model.eval()
+    model.device = device  # type: ignore
     return model
 
 def evaluate_model(model, test_dir=test_dir, batch_size=32):
@@ -50,10 +51,12 @@ def evaluate_model(model, test_dir=test_dir, batch_size=32):
         "confusion_matrix": cm.tolist()
     }
 
-def predict_image(model, image_path):
-    image = Image.open(image_path).convert("RGB")
+def predict_image(model, image):
+    if isinstance(image, str):
+        image = Image.open(image).convert("RGB")
+    
     transform = get_transforms()
-    tensor = transform(image).unsqueeze(0).to(device) # type: ignore
+    tensor = transform(image).unsqueeze(0).to(model.device) # type: ignore
 
     with torch.no_grad():
         output = model(tensor)
