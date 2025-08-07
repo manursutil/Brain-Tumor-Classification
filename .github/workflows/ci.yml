@@ -30,9 +30,10 @@ jobs:
       - name: Install uv and deps
         run: |
           python -m pip install --upgrade pip uv
-          # install project + dev deps into uv-managed venv targeting this Python
           if [ -f pyproject.toml ]; then uv sync --dev --python ${{ matrix.python-version }}; fi
-          # add Torch CPU wheels to that same env
+          # ensure test deps are present even if not in pyproject
+          uv pip install pytest pytest-cov pillow scikit-learn
+          # Torch CPU wheels
           uv pip install --index-url https://download.pytorch.org/whl/cpu torch torchvision
 
       - name: Run tests (coverage)
