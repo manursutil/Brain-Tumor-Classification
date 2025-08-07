@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv and deps
+        run: |
+          python -m pip install --upgrade pip uv
+          # install project + dev deps into uv-managed venv targeting this Python
+          if [ -f pyproject.toml ]; then uv sync --dev --python ${{ matrix.python-version }}; fi
+          # add Torch CPU wheels to that same env
+          uv pip install --index-url https://download.pytorch.org/whl/cpu torch torchvision
+
+      - name: Run tests (coverage)
+        run: |
+          uv run pytest --maxfail=1 --disable-warnings \
+            --cov=src.evaluate --cov-report=xml --cov-report=term-missing
+
+      - name: Upload coverage.xml
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.python-version }}
+          path: coverage.xml
