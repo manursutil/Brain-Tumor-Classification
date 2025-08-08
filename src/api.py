@@ -36,7 +36,7 @@ def get_model():
     return model
 
 @app.post("/predict")
-async def predict(file: UploadFile = File(..., media_type="image/jpeg"), model=Depends(get_model)):
+async def predict(file: UploadFile = File(..., media_type="image/jpeg"), model=Depends(get_model)):  # noqa: B008
     try:
         contents = await file.read()
         if len(contents) > MAX_IMAGE_SIZE:
@@ -51,19 +51,19 @@ async def predict(file: UploadFile = File(..., media_type="image/jpeg"), model=D
         raise exc
     except Exception as e:
         logger.exception("Prediction failed")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))  # noqa: B904
     
 @app.get("/metrics")
-def get_metrics(model=Depends(get_model)):
+def get_metrics(model=Depends(get_model)):  # noqa: B008
     try:
         metrics = evaluate_model(model)
         return metrics
     except Exception as e:
         logger.exception("Failed to evaluate model.")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))  # noqa: B904
     
 @app.get("/health")
-def health_check(model=Depends(get_model)):
+def health_check(model=Depends(get_model)):  # noqa: B008
     try:
         assert model is not None
         return {"status": "ok", "model_loaded": True}

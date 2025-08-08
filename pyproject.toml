@@ -28,12 +28,17 @@ dev = [
 ]
 
 [tool.ruff]
-line-length = 88
-target-version = "py311"
+target-version = "py313"
+line-length = 100
+extend-exclude = ["data/", "models/", ".venv/", "dist/"]
 
-[tool.ruff.lint]
-select = ["E", "F", "I"]
-ignore = ["E501"]
+# Lint rules: basics + bug-prone patterns + import sorting + pyupgrade
+lint.select = ["E", "F", "I", "UP", "B"]
+lint.ignore = ["E203"]
 
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
