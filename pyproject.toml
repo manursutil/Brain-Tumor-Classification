@@ -30,7 +30,7 @@ dev = [
 [tool.ruff]
 target-version = "py313"
 line-length = 100
-extend-exclude = ["data/", "models/", ".venv/", "dist/"]
+extend-exclude = ["data/", "models/", ".venv/", "dist/", "notebooks/"]
 
 # Lint rules: basics + bug-prone patterns + import sorting + pyupgrade
 lint.select = ["E", "F", "I", "UP", "B"]

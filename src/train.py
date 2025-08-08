@@ -41,7 +41,7 @@ for epoch in range(5):
     total_correct = 0
     total_samples = 0
 
-    loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/5]", leave=False)
+    loop = tqdm(train_loader, desc=f"Epoch [{epoch + 1}/5]", leave=False)
 
     for imgs, labels in loop:
         imgs, labels = imgs.to(device), labels.to(device)

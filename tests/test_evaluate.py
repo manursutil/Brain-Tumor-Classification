@@ -10,6 +10,7 @@ import src.evaluate as ev
 
 class DummyModel(torch.nn.Module):
     """Tiny model with .device and .fc like resnet18, but fully stubbed."""
+
     def __init__(self, logits_fn=None, in_features=512):
         super().__init__()
         # mimic resnet18 having an fc with in_features
@@ -46,7 +47,9 @@ def make_jpeg_bytes(size=(32, 32), color=(120, 50, 200)) -> bytes:
 @pytest.fixture(autouse=True)
 def patch_class_names(monkeypatch):
     # Ensure stable class names
-    monkeypatch.setattr(ev, "CLASS_NAMES", ["glioma", "meningioma", "notumor", "pituitary"], raising=True)
+    monkeypatch.setattr(
+        ev, "CLASS_NAMES", ["glioma", "meningioma", "notumor", "pituitary"], raising=True
+    )
 
 
 def test_load_model_initializes_and_sets_eval_and_device(monkeypatch):
@@ -120,7 +123,9 @@ def test_evaluate_model_happy_path(monkeypatch):
     labels = torch.tensor([0, 1, 2, 3])
 
     class FakeDataset:
-        def __len__(self): return 4
+        def __len__(self):
+            return 4
+
         def __getitem__(self, idx):  # not used because we replace DataLoader
             return images[idx], labels[idx]
 
@@ -132,6 +137,7 @@ def test_evaluate_model_happy_path(monkeypatch):
     def fake_loader(_ds, batch_size=32):
         # return an object that is iterable once, yielding (images, labels)
         return [(images, labels)]
+
     monkeypatch.setattr(ev, "DataLoader", fake_loader, raising=True)
 
     # Model that predicts exactly the true labels
@@ -167,7 +173,8 @@ def test_evaluate_model_handles_nonperfect_preds(monkeypatch):
     labels = torch.tensor([0, 1, 2, 3])
 
     class FakeDataset:
-        def __len__(self): return 4
+        def __len__(self):
+            return 4
 
     monkeypatch.setattr(ev, "BrainTumorDataset", lambda *a, **k: FakeDataset(), raising=True)
     monkeypatch.setattr(ev, "get_transforms", lambda: tiny_transform, raising=True)

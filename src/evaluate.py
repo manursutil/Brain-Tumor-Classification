@@ -15,8 +15,9 @@ from src.dataset import CLASS_NAMES, BrainTumorDataset, get_transforms
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-weights_path="./models/resnet18_brain_mri.pt"
+weights_path = "./models/resnet18_brain_mri.pt"
 test_dir = "./data/Testing/"
+
 
 def load_model(weights_path=weights_path):
     model = models.resnet18(weights=None)
@@ -26,6 +27,7 @@ def load_model(weights_path=weights_path):
     model.eval()
     model.device = device  # type: ignore
     return model
+
 
 def evaluate_model(model, test_dir=test_dir, batch_size=32):
     ds = BrainTumorDataset(test_dir, transform=get_transforms())
@@ -43,31 +45,33 @@ def evaluate_model(model, test_dir=test_dir, batch_size=32):
 
     report = classification_report(y_true, y_pred, target_names=CLASS_NAMES, output_dict=True)
     cm = confusion_matrix(y_true, y_pred)
-    
+
     return {
-        "accuracy": float(report["accuracy"]), # type: ignore
+        "accuracy": float(report["accuracy"]),  # type: ignore
         "classification_report": report,
-        "confusion_matrix": cm.tolist()
+        "confusion_matrix": cm.tolist(),
     }
+
 
 def predict_image(model, image):
     if isinstance(image, str):
         image = Image.open(image).convert("RGB")
-    
+
     transform = get_transforms()
-    tensor = transform(image).unsqueeze(0).to(model.device) # type: ignore
+    tensor = transform(image).unsqueeze(0).to(model.device)  # type: ignore
 
     with torch.no_grad():
         output = model(tensor)
         probs = torch.softmax(output, dim=1)
         conf, pred_class = torch.max(probs, dim=1)
-    
+
     return {
-        "predicted_class": CLASS_NAMES[pred_class.item()], # type: ignore
+        "predicted_class": CLASS_NAMES[pred_class.item()],  # type: ignore
         "confidence": round(conf.item(), 4),
-        "class_index": pred_class.item()
+        "class_index": pred_class.item(),
     }
-    
+
+
 if __name__ == "__main__":
     import argparse
 
