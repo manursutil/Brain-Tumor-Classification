@@ -1,5 +1,5 @@
 import io
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
@@ -58,7 +58,7 @@ def test_health_error_when_model_none(client: TestClient):
 
 def test_predict_success(client: TestClient, monkeypatch):
     # Stub predict_image to avoid running real inference
-    expected: Dict[str, Any] = {"prediction": "tumor", "confidence": 0.87}
+    expected: dict[str, Any] = {"prediction": "tumor", "confidence": 0.87}
     monkeypatch.setattr(api, "predict_image", lambda model, image: expected)
 
     jpeg_bytes = make_jpeg_bytes()
